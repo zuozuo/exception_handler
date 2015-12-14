@@ -56,7 +56,7 @@ module ExceptionHandler
 		end
 
 		# render 401 error
-		def render_unauthorized
+		def render_unauthorized(e)
 			handle_unauthorized e
 			respond_to do |f| 
 				f.html{ render template: "exception_handler/errors/unauthorized", status: 401, layout: 'application' }
