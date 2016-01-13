@@ -11,27 +11,14 @@ module ExceptionHandler
 		end
 
 		def handle_server_error(e)
-			logger.error ''
-			logger.error "-------------------------------Error Occured at: #{Time.now.to_s}-------------------------------------"
-			logger.error ''
-			logger.error e.to_s
-			e.backtrace[0..10].each {|line| logger.error line}
-			logger.error ''
-
-			logger.error 'SESSION'
-			logger.error session.to_hash
-			logger.error ''
-
-			logger.error 'CURRENT_USER'
-			logger.error current_user.attributes.except('hashed_password', 'encrypted_password', 'reset_password_token')
-			logger.error ''
-
-			logger.error 'ENV'
-			logger.error request.env
-			logger.error ''
-
-			logger.error "-------------------------------Error Ended at: #{Time.now.to_s}-------------------------------------"
-			logger.error ''
+			logger.info JSON.pretty_generate(
+			  EXCEPTION: e,
+				BACKTRACE: e.backtrace[0..10],
+				SESSION: session.to_hash,
+				CURRENT_USER: current_user.attributes.except('hashed_password', 'encrypted_password', 'reset_password_token'),
+				PARAMS: params,
+				ENV: request.env
+			)
 		end
 
 		def handle_not_found(e); end
@@ -63,5 +50,6 @@ module ExceptionHandler
 				f.js{ render template: "exception_handler/errors/unauthorized", status: 401 }
 			end
 		end
+
 	end
 end
