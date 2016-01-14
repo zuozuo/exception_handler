@@ -15,7 +15,7 @@ module ExceptionHandler
 			  EXCEPTION: e,
 				BACKTRACE: e.backtrace[0..10],
 				SESSION: session.to_hash,
-				CURRENT_USER: current_user.attributes.except('hashed_password', 'encrypted_password', 'reset_password_token'),
+				CURRENT_USER: (current_user.try(:attributes) || {}).except('hashed_password', 'encrypted_password', 'reset_password_token'),
 				PARAMS: params,
 				ENV: request.env
 			)
